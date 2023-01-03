@@ -17,6 +17,11 @@ public:
     Matrix vectorize() ;
     void plain_print() const;
     Matrix dot(const Matrix& mat) const ;
+    float sum() const;
+    float norm() const;
+    int argmax() const;
+
+
     float * get_matrix() const { return matrix_ ; }
     int get_rows() const { return dims_->rows ; }
     int get_cols() const { return dims_->cols ; }

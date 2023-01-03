@@ -1,7 +1,7 @@
 /*
  * matrix.cpp
  */
-
+#include <cmath>
 #include <stdexcept>
 #include "Matrix.h"
 #define EPS 1e-10
@@ -195,6 +195,34 @@ std::ostream &operator<<(ostream & os, const Matrix &m) {
         os << '\n';
     }
     return os;
+}
+
+float Matrix::sum() const {
+    float sumi = 0 ;
+    for (int i = 0; i < dims_->cols*dims_->rows; ++i) {
+        sumi += (*this)[i] ;
+    }
+    return sumi ;
+}
+
+float Matrix::norm() const {
+    float sumi = 0 ;
+    for (int i = 0; i < dims_->cols*dims_->rows; ++i) {
+        sumi += (((*this)[i])*((*this)[i])) ;
+    }
+    return std::sqrt(sumi) ;
+}
+
+int Matrix::argmax() const {
+    int indx = 0 ;
+    float biggest = 0 ;
+    for (int i = 0; i < dims_->cols*dims_->rows; ++i) {
+        if((*this)[i] > biggest) {
+            biggest = (*this)[i] ;
+            indx = i ;
+        }
+    }
+    return indx ;
 }
 
 
