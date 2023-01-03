@@ -19,16 +19,22 @@ typedef struct digit {
     float probability;
 } digit;
 
-//const Matrix::dims img_dims = {28, 28};
-//const Matrix::dims weights_dims[] = {{128, 784},
-//                                     {64,  128},
-//                                     {20,  64},
-//                                     {10,  20}};
-//const Matrix::dims bias_dims[] = {{128, 1},
-//                                  {64,  1},
-//                                  {20,  1},
-//                                  {10,  1}};
+const Matrix::dims img_dims = {28, 28};
+const Matrix::dims weights_dims[] = {{128, 784},
+                                     {64,  128},
+                                     {20,  64},
+                                     {10,  20}};
+const Matrix::dims bias_dims[] = {{128, 1},
+                                  {64,  1},
+                                  {20,  1},
+                                  {10,  1}};
 
-// Insert MlpNetwork class here...
-
+class MlpNetwork {
+private :
+    Matrix* weights_ ;
+    Matrix* biases_ ;
+public:
+    MlpNetwork(Matrix* weights,Matrix* biases) ;
+    digit operator()(const Matrix &img) ;
+};
 #endif // MLPNETWORK_H
