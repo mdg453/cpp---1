@@ -1,5 +1,5 @@
 #include "Matrix.h"
-#include <iostream>
+
 #ifndef ACTIVATION_H
 #define ACTIVATION_H
 

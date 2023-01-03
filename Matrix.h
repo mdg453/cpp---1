@@ -3,7 +3,6 @@
 
 #include <iostream>
 using std::ostream;
-
 class Matrix {
 public:
     struct dims {
@@ -11,18 +10,16 @@ public:
     };
     Matrix(int rows, int cols) ;
     Matrix();
-    Matrix(const Matrix& m) ;
+    Matrix(const Matrix &m) ;
     ~Matrix();
     Matrix &transpose();
     Matrix vectorize() ;
     void plain_print() const;
     Matrix dot(const Matrix& mat) const ;
     float sum() const;
-    float norm() const;
+    double norm() const;
     int argmax() const;
 
-
-    float * get_matrix() const { return matrix_ ; }
     int get_rows() const { return dims_->rows ; }
     int get_cols() const { return dims_->cols ; }
     float& operator()(int row, int col) { return matrix_[row*get_cols() + col]; }
@@ -31,7 +28,7 @@ public:
     float operator[](int row) const { return matrix_[row]; }
 
 
-    Matrix& operator=(const Matrix&);
+    Matrix& operator=(const Matrix& m);
     Matrix& operator+=(const Matrix& m1);
     Matrix operator+(const Matrix& m1);
     Matrix operator*(const Matrix& m1) ;

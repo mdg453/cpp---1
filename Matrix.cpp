@@ -4,15 +4,15 @@
 #include <cmath>
 #include <stdexcept>
 #include "Matrix.h"
-#define EPS 1e-10
+#include <iostream>
 
 using std::ostream;  using std::istream;  using std::endl;
 using std::domain_error;
 using std::swap;
-// PUBLIC MEMBER FUNCTIONS
 
 
-Matrix::Matrix(int rows, int cols) : dims_(new (dims) {rows, cols}) , matrix_(new float [rows * cols])
+Matrix::Matrix(int rows, int cols) : dims_(new (dims) {rows, cols})
+                                    , matrix_(new float [rows * cols])
 {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
@@ -72,7 +72,8 @@ void Matrix::plain_print() const {
 }
 
 Matrix Matrix::dot(const Matrix& mat) const {
-    if (this->get_cols() != mat.get_cols() || this->get_rows() != mat.get_rows()){
+    if (this->get_cols() != mat.get_cols() || this->get_rows()
+                                            != mat.get_rows()){
         std::cout << "bad size matrix for hard copy" ;
         return *this ;
     }
@@ -205,12 +206,13 @@ float Matrix::sum() const {
     return sumi ;
 }
 
-float Matrix::norm() const {
-    float sumi = 0 ;
+double Matrix::norm() const {
+    double sumi = 0 ;
     for (int i = 0; i < dims_->cols*dims_->rows; ++i) {
-        sumi += (((*this)[i])*((*this)[i])) ;
+        sumi += std::pow(((*this)[i]),((*this)[i])) ;
     }
-    return std::sqrt(sumi) ;
+    double sqrt_sum = std::sqrt(sumi) ;
+    return sqrt_sum ;
 }
 
 int Matrix::argmax() const {

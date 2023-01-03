@@ -2,10 +2,9 @@
 
 #ifndef MLPNETWORK_H
 #define MLPNETWORK_H
-
+#define MLP_SIZE 4
 #include "Dense.h"
 
-#define MLP_SIZE 4
 
 /**
  * @struct digit
@@ -35,6 +34,6 @@ private :
     Matrix* biases_ ;
 public:
     MlpNetwork(Matrix* weights,Matrix* biases) ;
-    digit operator()(const Matrix &img) ;
+    digit operator()(const Matrix &img) const ;
 };
 #endif // MLPNETWORK_H

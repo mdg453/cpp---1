@@ -1,4 +1,5 @@
 #include "Dense.h"
+using namespace activation;
 
 Dense::Dense(const Matrix &weights, const Matrix &bias,
              to_activate activation_function): weights_(weights),

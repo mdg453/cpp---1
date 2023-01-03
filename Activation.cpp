@@ -1,6 +1,7 @@
 #include "Activation.h"
 #include <cmath>
 using std::exp;
+
 Matrix activation::relu(const Matrix& matrixa) {
     Matrix n_m(matrixa) ;
     for (int i = 0; i < n_m.get_rows()*n_m.get_cols(); ++i) {
