@@ -3,7 +3,7 @@
  */
 
 #include <stdexcept>
-#include "matrix.h"
+#include "Matrix.h"
 
 #define EPS 1e-10
 
@@ -15,65 +15,62 @@ using std::domain_error;
 
 Matrix::Matrix(int rows, int cols) : rows_(rows), cols_(cols)
 {
-    allocSpace();
+    matrix_ = new float [rows_ * cols_];
     for (int i = 0; i < rows_; ++i) {
         for (int j = 0; j < cols_; ++j) {
-            matrix_[i][j] = 0;
+            this->matrix_[i*cols_+j] = 0;
         }
     }
 }
 
 Matrix::Matrix() : rows_(1), cols_(1)
 {
-    allocSpace();
-    matrix_[0][0] = 0;
+    matrix_ =new float [rows_ * cols_];
+    matrix_[0] = 0;
 }
 
 Matrix::Matrix(const Matrix& m) : rows_(m.rows_), cols_(m.cols_)
 {
-    allocSpace();
+    Matrix n_m(rows_,cols_) ;
     for (int i = 0; i < rows_; ++i) {
         for (int j = 0; j < cols_; ++j) {
-            matrix_[i][j] = m.matrix_[i][j];
+            n_m(i,j) = m(i,j);
         }
     }
 }
 
 Matrix::~Matrix()
 {
-    for (int i = 0; i < rows_; ++i) {
-        delete[] matrix_[i];
-    }
     delete[] matrix_;
 }
 
-Matrix Matrix::transpose()
+
+Matrix&
+
+Matrix::transpose ()
 {
-    Matrix ret(cols_, rows_);
-    for (int i = 0; i < rows_; ++i) {
-        for (int j = 0; j < cols_; ++j) {
-            ret.matrix_[j][i] = matrix_[i][j];
+    int cols = this->get_cols() ;
+    int rows = this->get_rows() ;
+    Matrix trans_m(cols, rows) ;
+    for (int i = 0; i < cols; i++) {
+        for (int j = 0; j < rows; j++) {
+            trans_m(i,j) = (*this)(j,i);
         }
     }
-    return ret;
+    (*this) = (trans_m) ;
 }
 
 Matrix Matrix::vectorize() {
-    int rows = rows_;
     int cols = cols_;
-    Matrix vec(rows * cols, 1);
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            vec.matrix_[i * cols + j][0] = matrix_[i][j];
-        }
-    }
-    return vec;
+    cols_ = 1 ;
+    rows_ = cols*rows_ ;
+    return reinterpret_cast<const Matrix &>(matrix_);
 }
 
 void Matrix::plain_print() {
-    for (int i = 0; i < rows_; ++i) {
-        for (int j = 0; j < cols_; ++j) {
-            std::cout << matrix_[i][j] << " ";
+    for (int i = 0; i < rows_; i++) {
+        for (int j = 0; j < cols_; j++) {
+            std::cout << matrix_[i*cols_ + j] << " ";
         }
         std::cout << std::endl;
     }
@@ -84,68 +81,11 @@ Matrix& Matrix::operator=(const Matrix& m)
     if (this == &m) {
         return *this;
     }
-
-    if (rows_ != m.rows_ || cols_ != m.cols_) {
-        for (int i = 0; i < rows_; ++i) {
-            delete[] matrix_[i];
-        }
-        delete[] matrix_;
-
-        rows_ = m.rows_;
-        cols_ = m.cols_;
-        allocSpace();
-    }
-
-    for (int i = 0; i < rows_; ++i) {
-        for (int j = 0; j < cols_; ++j) {
-            matrix_[i][j] = m.matrix_[i][j];
-        }
-    }
-    return *this;
-}
-
-
-
-Matrix& Matrix::operator+=(const Matrix& m)
-{
-    for (int i = 0; i < rows_; ++i) {
-        for (int j = 0; j < cols_; ++j) {
-            matrix_[i][j] += m.matrix_[i][j];
-        }
-    }
-    return *this;
-}
-
-
-Matrix& Matrix::operator*=(const Matrix& m)
-{
-    Matrix temp(rows_, m.cols_);
-    for (int i = 0; i < temp.rows_; ++i) {
-        for (int j = 0; j < temp.cols_; ++j) {
-            for (int k = 0; k < cols_; ++k) {
-                temp.matrix_[i][j] += (matrix_[i][k] * m.matrix_[k][j]);
-            }
-        }
-    }
-    return (*this = temp);
-}
-
-
-Matrix& Matrix::operator*=(double num)
-{
-    for (int i = 0; i < rows_; ++i) {
-        for (int j = 0; j < cols_; ++j) {
-            matrix_[i][j] *= num;
-        }
-    }
-    return *this;
-}
-
-void Matrix::swapRows(int r1, int r2)
-{
-    double *temp = matrix_[r1];
-    matrix_[r1] = matrix_[r2];
-    matrix_[r2] = temp;
+    Matrix n_m(m) ;
+    std::swap (this->rows_, n_m.rows_);
+    std::swap (this->cols_, n_m.cols_);
+    std::swap (this->matrix_, n_m.matrix_);
+    return (*this);
 }
 
 
@@ -155,110 +95,82 @@ void Matrix::swapRows(int r1, int r2)
 /* STATIC CLASS FUNCTIONS
  ********************************/
 
-Matrix Matrix::createIdentity(int size)
+
+
+Matrix& Matrix::operator +=(const Matrix& m1)
 {
-    Matrix temp(size, size);
-    for (int i = 0; i < temp.rows_; ++i) {
-        for (int j = 0; j < temp.cols_; ++j) {
-            if (i == j) {
-                temp.matrix_[i][j] = 1;
-            } else {
-                temp.matrix_[i][j] = 0;
+    for (int i = 0; i < rows_; ++i) {
+        for (int j = 0; j < cols_; ++j) {
+            (*this)(i,j) += m1(i,j) ;
+        }
+    }
+    return *this;
+}
+
+Matrix Matrix::operator+(const Matrix& m1)
+{
+    Matrix temp(*this) ;
+    for (int i = 0; i < temp.get_cols() ; ++i) {
+        for (int j = 0; j < temp.get_rows(); ++j) {
+           temp(i,j) += m1(i,j) ;
+        }
+    }
+    return (temp);
+}
+
+Matrix Matrix::operator*(const Matrix& m1)
+{
+    float sum = 0;
+    Matrix c = Matrix(this->get_rows(), m1.cols_) ;
+    for (int i = 0; i < this->get_rows(); ++i) {
+        sum = 0 ;
+        for (int j =0 ; j <m1.cols_; ++j) {
+            for (int k = 0; k < this->cols_; ++k) {
+                c(i,j) += (*this)(i,k) * m1(k, j) ;
             }
         }
     }
-    return temp;
-}
-
-double Matrix::dotProduct(Matrix a, Matrix b)
-{
-    double sum = 0;
-    for (int i = 0; i < a.rows_; ++i) {
-        sum += (a(i, 0) * b(i, 0));
-    }
-    return sum;
+    return c;
 }
 
 
-
-/* PRIVATE HELPER FUNCTIONS
- ********************************/
-
-void Matrix::allocSpace()
+Matrix& Matrix::operator*(float& num)
 {
-    matrix_ = new double*[rows_];
-    for (int i = 0; i < rows_; ++i) {
-        matrix_[i] = new double[cols_];
+    Matrix temp(*this);
+    for (int i = 0; i < this->get_rows()* this->get_cols(); i++) {
+        this->matrix_[i] *= num ;
     }
 }
 
 
-Matrix Matrix::expHelper(const Matrix& m, int num)
-{
-    if (num == 0) {
-        return createIdentity(m.rows_);
-    } else if (num == 1) {
-        return m;
-    } else if (num % 2 == 0) {  // num is even
-        return expHelper(m * m, num/2);
-    } else {                    // num is odd
-        return m * expHelper(m * m, (num-1)/2);
-    }
-}
+
+//std::istream &operator>>(istream& is, Matrix& m)
+//{
+//    for (int i = 0; i < m.rows_; ++i) {
+//        for (int j = 0; j < m.cols_; ++j) {
+//            is >> m(i,j);
+//        }
+//    }
+//    return is;
+//}
+//
+//std::ostream &operator<<(ostream & os, const Matrix &m) {
+//    for (int i = 0; i < m.rows_; ++i) {
+//        os << m.matrix_[i];
+//        for (int j = 1; j < m.cols_; ++j) {
+//            os << " " << m(i,j);
+//        }
+//        os << endl;
+//    }
+//    return os;
+//}
 
 
-/* NON-MEMBER FUNCTIONS
- ********************************/
-
-Matrix operator+(const Matrix& m1, const Matrix& m2)
-{
-    Matrix temp(m1);
-    return (temp += m2);
-}
 
 
-Matrix operator*(const Matrix& m1, const Matrix& m2)
-{
-    Matrix temp(m1);
-    return (temp *= m2);
-}
 
 
-Matrix operator*(const Matrix& m, double num)
-{
-    Matrix temp(m);
-    return (temp *= num);
-}
 
-
-Matrix operator*(double num, const Matrix& m)
-{
-    return (m * num);
-}
-
-
-ostream& operator<<(ostream& os, const Matrix& m)
-{
-    for (int i = 0; i < m.rows_; ++i) {
-        os << m.matrix_[i][0];
-        for (int j = 1; j < m.cols_; ++j) {
-            os << " " << m.matrix_[i][j];
-        }
-        os << endl;
-    }
-    return os;
-}
-
-
-istream& operator>>(istream& is, Matrix& m)
-{
-    for (int i = 0; i < m.rows_; ++i) {
-        for (int j = 0; j < m.cols_; ++j) {
-            is >> m.matrix_[i][j];
-        }
-    }
-    return is;
-}
 
 
 

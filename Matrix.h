@@ -1,7 +1,3 @@
-/*
- * matrix.h
- */
-
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
 
@@ -10,60 +6,37 @@
 class Matrix {
 private:
     int rows_, cols_;
-    double **matrix_;
-
-    void allocSpace();
-    Matrix expHelper(const Matrix&, int);
+    float *matrix_;
 
 
 public:
-    Matrix(int, int);
+    Matrix(int rows, int cols) ;
     Matrix();
-
-
+    Matrix(const Matrix& m) ;
     ~Matrix();
-    Matrix(const Matrix&);
-    Matrix& operator=(const Matrix&);
-
-    int get_rows(){
-        return rows_ ;
-    }
-    int get_cols(){
-        return cols_ ;
-    }
-    Matrix transpose();
-
+    Matrix &transpose();
     Matrix vectorize() ;
-
     void plain_print() ;
 
+    float * get_matrix(){ return matrix_ ; }
+    int get_rows(){ return rows_ ; }
+    int get_cols(){ return cols_ ; }
+    float& operator()(int row, int col) { return matrix_[row*cols_ + col]; }
+    float operator()(int row, int col)  const { return matrix_[row*cols_ + col]; }
+    float& operator[](int row) { return matrix_[row]; }
+    float operator[](int row) const { return matrix_[row]; }
 
-    inline double& operator()(int x, int y) { return matrix_[x][y]; }
-    double* operator[](int row) { return matrix_[row * cols_]; }
 
-    Matrix& operator+=(const Matrix&);
-    Matrix& operator*=(const Matrix&);
-    Matrix& operator*=(double);
+    Matrix& operator=(const Matrix&);
+    Matrix& operator+=(const Matrix& m1);
+    Matrix operator+(const Matrix& m1);
+    Matrix operator*(const Matrix& m1) ;
+    Matrix & operator*(float& num);
 
     friend std::ostream& operator<<(std::ostream&, const Matrix&);
     friend std::istream& operator>>(std::istream&, Matrix&);
 
-    void swapRows(int, int);
-
-
-    static Matrix createIdentity(int);
-
-
-    // functions on vectors
-    static double dotProduct(Matrix, Matrix);
-
 };
 
-Matrix operator+(const Matrix&, const Matrix&);
-Matrix operator-(const Matrix&, const Matrix&);
-Matrix operator*(const Matrix&, const Matrix&);
-Matrix operator*(const Matrix&, double);
-Matrix operator*(double, const Matrix&);
-Matrix operator/(const Matrix&, double);
 
 #endif
