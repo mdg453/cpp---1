@@ -208,8 +208,8 @@ float Matrix::sum() const {
 
 double Matrix::norm() const {
     double sumi = 0 ;
-    for (int i = 0; i < dims_->cols*dims_->rows; ++i) {
-        sumi += std::pow(((*this)[i]),((*this)[i])) ;
+    for (int i = 0; i < dims_->cols*dims_->rows; i++) {
+        sumi += std::pow(((*this)[i]),2) ;
     }
     double sqrt_sum = std::sqrt(sumi) ;
     return sqrt_sum ;
