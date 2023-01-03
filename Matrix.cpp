@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include "Matrix.h"
 #include <iostream>
-
+#define SUF 0.1
 using std::ostream;  using std::istream;  using std::endl;
 using std::domain_error;
 using std::swap;
@@ -165,27 +165,33 @@ Matrix operator*(float num, const Matrix &m1) {
     return m1 * num;
 }
 
-std::istream &operator>>(istream& is, Matrix& m)
+std::istream &operator>> (std::istream &is, Matrix &matrix)
 {
-    for (int i = 0; i < m.dims_->rows; ++i) {
-        for (int j = 0; j < m.dims_->cols; ++j) {
-            is >> m(i,j);
-        }
+    if (!is.good())
+    {
+        throw std::runtime_error{"Incorrect user input received"};
+    }
+    char *buff = (char *) matrix.matrix_ ;
+    if (is.good())
+    {
+        is.read (buff,(long)(matrix.dims_->rows * matrix.dims_->cols
+                               * sizeof(float)));
     }
     return is;
 }
 
-std::ostream &operator<<(ostream & os, const Matrix &m) {
+
+std::ostream &operator<<(std::ostream &os, const Matrix& m) {
     for (int i = 0; i < m.dims_->rows; ++i) {
         for (int j = 0; j < m.dims_->cols; ++j) {
-            if(m(i,j) > 0.1){
+            if(m(i,j) > SUF){
                 os << "**";
             }
             else{
                 os << "  ";
             }
         }
-        os << '\n';
+        os << std::endl;
     }
     return os;
 }
