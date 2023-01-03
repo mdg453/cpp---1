@@ -126,14 +126,12 @@ Matrix Matrix::operator+(const Matrix& m1)
     return (temp);
 }
 
-Matrix Matrix::operator*(const Matrix& m1)
-{
-    if (this->dims_->cols != m1.get_rows()) {
-        std::cout << "bad size matrix for hard copy" ;
-        return *this ;
+Matrix Matrix::operator*(const Matrix& m1) const {
+    if (this->dims_->cols != m1.dims_->rows) {
+        throw std::domain_error{"bad size matrix for hard copy"} ;
     }
-    Matrix c = Matrix(this->get_rows(), m1.dims_->cols) ;
-    for (int i = 0; i < this->get_rows(); ++i) {
+    Matrix c = Matrix(this->dims_->rows, m1.dims_->cols) ;
+    for (int i = 0; i < this->dims_->rows; ++i) {
         for (int j =0 ; j <m1.dims_->cols; ++j) {
             for (int k = 0; k < this->dims_->cols; ++k) {
                 c(i,j) += (*this)(i,k) * m1(k, j) ;
@@ -143,10 +141,6 @@ Matrix Matrix::operator*(const Matrix& m1)
     return c;
 }
 
-Matrix Matrix::operator*(const Matrix& m1) const {
-    Matrix m2_n(*this) ;
-    return m2_n * m1 ;
-}
 Matrix& Matrix::operator*(float num)
 {
     for (int i = 0; i < this->get_rows()* this->get_cols(); i++) {

@@ -31,7 +31,6 @@ public:
     Matrix& operator=(const Matrix& m);
     Matrix& operator+=(const Matrix& m1);
     Matrix operator+(const Matrix& m1);
-    Matrix operator*(const Matrix& m1) ;
     Matrix operator*(const Matrix& m1) const ;
     Matrix & operator*(float num);
     Matrix operator*(float num) const;
