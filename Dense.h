@@ -2,7 +2,7 @@
 #define DENSE_H
 
 #include "Activation.h"
-#include "matrix.h" // Make sure to include the Matrix class
+#include "Matrix.h" // Make sure to include the Matrix class
 #include <functional> // For std::function
 using activation::to_activate;
 class Dense {
