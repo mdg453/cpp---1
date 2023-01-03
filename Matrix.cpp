@@ -141,16 +141,14 @@ Matrix Matrix::operator*(const Matrix& m1) const {
     return c;
 }
 
-Matrix& Matrix::operator*(float num)
-{
-    for (int i = 0; i < this->get_rows()* this->get_cols(); i++) {
-        this->matrix_[i] *= num ;
-    }
-    return *this ;
-}
+//Matrix& Matrix::operator*(float num) {
+//    for (int i = 0; i < this->get_rows()* this->get_cols(); i++) {
+//        this->matrix_[i] *= num ;
+//    }
+//    return *this ;
+//}
 
-Matrix Matrix::operator*(float num) const
-{
+Matrix Matrix::operator*(float num) const {
     Matrix n_m = Matrix(*this);
     for (int i = 0; i < this->get_rows()* this->get_cols(); i++) {
         n_m[i] *= num ;
