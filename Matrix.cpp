@@ -161,6 +161,7 @@ Matrix operator*(float num, Matrix& m1)
     return m1 * num;
 }
 
+
 Matrix operator*(float num, const Matrix &m1) {
     return m1 * num;
 }
