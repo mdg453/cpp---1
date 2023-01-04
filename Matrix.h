@@ -1,6 +1,5 @@
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
-
 #include <iostream>
 using std::ostream;
 class Matrix {

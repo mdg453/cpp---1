@@ -1,6 +1,8 @@
 
 #include "MlpNetwork.h"
 using namespace activation ;
+#define ERROR_INVALID_IMG "bad img input "
+
 MlpNetwork::MlpNetwork(Matrix *weights, Matrix *biases)
                 : r1(weights[0], biases[0], relu),
                 r2(weights[1], biases[1], relu),
@@ -8,6 +10,9 @@ MlpNetwork::MlpNetwork(Matrix *weights, Matrix *biases)
                 r4(weights[3], biases[3], softmax) {}
 
 digit MlpNetwork::operator()(const Matrix &img) const {
+    if(&img == nullptr){
+        std::out_of_range(ERROR_INVALID_IMG) ;
+    }
     Matrix temp(img);
     Matrix l1 = r1(temp.vectorize());
     Matrix l2 =r2(l1);

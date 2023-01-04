@@ -1,11 +1,11 @@
-/*
- * matrix.cpp
- */
 #include <cmath>
 #include <stdexcept>
 #include "Matrix.h"
 #include <iostream>
 #define SUF 0.1
+#define ERROR_INVALID_SIZE "bad size matrix for hard copy"
+#define ERROR_INVALID_INPUT "bad user input "
+
 using std::ostream;  using std::istream;  using std::endl;
 using std::domain_error;
 using std::swap;
@@ -73,8 +73,7 @@ void Matrix::plain_print() const {
 Matrix Matrix::dot(const Matrix& mat) const {
     if (this->get_cols() != mat.get_cols() || this->get_rows()
                                             != mat.get_rows()){
-        std::cout << "bad size matrix for hard copy" ;
-        return *this ;
+        throw std::domain_error(ERROR_INVALID_SIZE);
     }
     Matrix n_m(*this) ;
     for (int i = 0; i < this->get_rows()*this->get_cols(); ++i) {
@@ -106,6 +105,10 @@ Matrix& Matrix::operator=(const Matrix& m)
 
 Matrix& Matrix::operator +=(const Matrix& m1)
 {
+    if (this->dims_->cols != m1.dims_->cols ||
+            this->dims_->rows != m1.dims_->rows) {
+        throw std::domain_error(ERROR_INVALID_SIZE);
+    }
     for (int i = 0; i < this->dims_->rows; ++i) {
         for (int j = 0; j < this->dims_->cols; ++j) {
             (*this)(i,j) += m1(i,j) ;
@@ -127,7 +130,7 @@ Matrix Matrix::operator+(const Matrix& m1)
 
 Matrix Matrix::operator*(const Matrix& m1) const {
     if (this->dims_->cols != m1.dims_->rows) {
-        throw std::domain_error{"bad size matrix for hard copy"} ;
+        throw std::domain_error(ERROR_INVALID_SIZE);
     }
     Matrix c = Matrix(this->dims_->rows, m1.dims_->cols) ;
     for (int i = 0; i < this->dims_->rows; ++i) {
@@ -163,7 +166,7 @@ std::istream &operator>> (std::istream &is, Matrix &matrix)
 {
     if (!is.good())
     {
-        throw std::runtime_error{"Incorrect user input received"};
+        throw std::runtime_error(ERROR_INVALID_INPUT);
     }
     char *buff = (char *) matrix.matrix_ ;
     if (is.good())
