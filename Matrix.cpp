@@ -14,6 +14,7 @@ using std::swap;
 Matrix::Matrix(int rows, int cols) : dims_(new (dims) {rows, cols})
                                     , matrix_(new float [rows * cols])
 {
+
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
             this->operator()(i,j) = 0;
@@ -43,9 +44,9 @@ Matrix&
 
 Matrix::transpose ()
 {
+    Matrix trans_m(this->dims_->cols, this->dims_->rows) ;
     int t_cols = this->get_cols() ;
     int t_rows = this->get_rows() ;
-    Matrix trans_m(t_cols, t_rows) ;
     for (int i = 0; i < t_cols; i++) {
         for (int j = 0; j < t_rows; j++) {
             trans_m(i,j) = (*this)(j,i);
@@ -56,7 +57,7 @@ Matrix::transpose ()
 }
 
 Matrix Matrix::vectorize() {
-    this->dims_->rows *= this->dims_->cols ;
+    this->dims_->rows = this->dims_->cols*this->dims_->rows ;
     this->dims_->cols = 1 ;
     return *this ;
 }
