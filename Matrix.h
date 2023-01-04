@@ -13,7 +13,7 @@ public:
     Matrix(const Matrix &m) ;
     ~Matrix();
     Matrix &transpose();
-    Matrix vectorize() ;
+    Matrix &vectorize() ;
     void plain_print() const;
     Matrix dot(const Matrix& mat) const ;
     float sum() const;

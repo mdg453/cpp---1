@@ -45,10 +45,8 @@ Matrix&
 Matrix::transpose ()
 {
     Matrix trans_m(this->dims_->cols, this->dims_->rows) ;
-    int t_cols = this->get_cols() ;
-    int t_rows = this->get_rows() ;
-    for (int i = 0; i < t_cols; i++) {
-        for (int j = 0; j < t_rows; j++) {
+    for (int i = 0; i < this->dims_->cols; i++) {
+        for (int j = 0; j < this->dims_->rows; j++) {
             trans_m(i,j) = (*this)(j,i);
         }
     }
@@ -56,7 +54,7 @@ Matrix::transpose ()
     return *this ;
 }
 
-Matrix Matrix::vectorize() {
+Matrix &Matrix::vectorize() {
     this->dims_->rows = this->dims_->cols*this->dims_->rows ;
     this->dims_->cols = 1 ;
     return *this ;
