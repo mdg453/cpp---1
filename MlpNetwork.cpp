@@ -2,34 +2,19 @@
 #include "MlpNetwork.h"
 using namespace activation ;
 MlpNetwork::MlpNetwork(Matrix *weights, Matrix *biases)
-                : weights_(weights), biases_(biases) {}
+                : r1(weights[0], biases[0], relu),
+                r2(weights[1], biases[1], relu),
+                r3(weights[2], biases[2], relu),
+                r4(weights[3], biases[3], softmax) {}
 
 digit MlpNetwork::operator()(const Matrix &img) const {
-    Dense r1(this->weights_[0], this->biases_[0],
-                                    relu) ;
     Matrix temp(img);
-    Matrix r1_m = r1(temp.vectorize()) ;
-
-    Dense r2(this->weights_[1], this->biases_[1],
-                                relu) ;
-    Matrix r2_m = r2(r1_m) ;
-
-    Dense r3(this->weights_[2], this->biases_[2],
-                                        relu) ;
-    Matrix r3_m = r3(r2_m) ;
-
-    Dense r4(this->weights_[3], this->biases_[3],
-                                                    softmax) ;
-    Matrix r4_m = r4(r3_m) ;
-    digit dig;
-    dig.probability = 0;
-    dig.value = 0;
-    for (int i = 0; i < r4_m.get_rows()*r4_m.get_cols(); ++i) {
-        if (dig.probability < r4_m[i]){
-            dig.probability = r4_m[i] ;
-            dig.value = i ;
-        }
-    }
+    Matrix l1 = r1(temp.vectorize());
+    Matrix l2 =r2(l1);
+    Matrix l3 =r3(l2);
+    Matrix l4 =r4(l3);
+    int max_val = l4.argmax();
+    digit dig = { (unsigned  int )max_val, l4[max_val] };
     return dig;
 }
 

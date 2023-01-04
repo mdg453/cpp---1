@@ -30,8 +30,10 @@ const Matrix::dims bias_dims[] = {{128, 1},
 
 class MlpNetwork {
 private :
-    Matrix* weights_ ;
-    Matrix* biases_ ;
+    Dense r1;
+    Dense r2;
+    Dense r3;
+    Dense r4;
 public:
     MlpNetwork(Matrix* weights,Matrix* biases) ;
     digit operator()(const Matrix &img) const ;
